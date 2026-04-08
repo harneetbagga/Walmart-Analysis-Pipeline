@@ -1,0 +1,10 @@
+version: 2
+
+sources:
+  - name: bronze
+    database: WALLMART_DB
+    schema: BRONZE
+    tables:
+      - name: WALLMART_STORES
+      - name: WALLMART_FACT
+      - name: WALLMART_DEPARTMENT
