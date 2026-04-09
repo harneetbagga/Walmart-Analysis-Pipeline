@@ -45,6 +45,6 @@ models:
       +schema: INTEGRATION
       +materialized: view
 
-    mart:
+    marts:
       +schema: GOLD
-      +materialized: view
+      +materialized: table
