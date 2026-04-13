@@ -1,7 +1,7 @@
 WITH ranked AS (
     SELECT *,
            ROW_NUMBER() OVER (
-               PARTITION BY STORE_ID,DEPARTMENT_ID
+               PARTITION BY STORE_ID,DEPARTMENT_ID,DEPARTMENT_DATE
                ORDER BY UPDATE_DTS DESC
            ) AS rn
     FROM {{ source('bronze', 'WALLMART_DEPARTMENT') }}

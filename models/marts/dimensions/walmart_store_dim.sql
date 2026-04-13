@@ -1,21 +1,20 @@
-{{ config(materialized='table') }}
-
-WITH ranked AS (
-    SELECT *,
-           ROW_NUMBER() OVER (
-               PARTITION BY STORE_ID, DEPARTMENT_ID
-               ORDER BY DEPT_UPDATE_DTS DESC
-           ) AS rn
-    FROM {{ ref('int_walmart') }}
-)
+{{ config(
+    schema='GOLD',
+    materialized='table'
+) }}
 
 SELECT
     STORE_ID,
     DEPARTMENT_ID,
     STORE_TYPE,
     STORE_SIZE,
+
     CURRENT_TIMESTAMP() AS INSERT_DATE,
     CURRENT_TIMESTAMP() AS UPDATE_DATE
 
-FROM ranked
-WHERE rn = 1
+FROM {{ ref('int_walmart') }}
+
+QUALIFY ROW_NUMBER() OVER (
+    PARTITION BY STORE_ID, DEPARTMENT_ID
+    ORDER BY RECORD_LAST_UPDATED_TS DESC
+) = 1
