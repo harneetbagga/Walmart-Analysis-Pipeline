@@ -1,3 +1,8 @@
+{{ config(
+    schema='GOLD',
+    materialized='table'
+) }}
+
 SELECT
     STORE_ID,
     DEPARTMENT_ID,

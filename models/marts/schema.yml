@@ -1,0 +1,64 @@
+version: 2
+
+models:
+
+  - name: walmart_date_dim
+    description: "Date dimension table (SCD1)"
+
+    columns:
+      - name: DATE_ID
+        tests:
+          - not_null
+          - unique
+
+  - name: walmart_store_dim
+    description: "Store dimension table (SCD1)"
+
+    columns:
+      - name: STORE_ID
+        tests:
+          - not_null
+
+      - name: DEPARTMENT_ID
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - STORE_ID
+              - DEPARTMENT_ID
+
+  - name: walmart_fact_table
+    description: "Fact table (SCD2)"
+
+    columns:
+      - name: STORE_ID
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('walmart_store_dim')
+                field: STORE_ID
+
+      - name: DATE_ID
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('walmart_date_dim')
+                field: DATE_ID
+
+      - name: VRSN_START_DATE
+        tests:
+          - not_null
+
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns:
+              - STORE_ID
+              - DEPARTMENT_ID
+              - DATE_ID
+              - VRSN_START_DATE
